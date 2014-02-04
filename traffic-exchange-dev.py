@@ -1,4 +1,4 @@
-import os
+import os,sys, traceback, getopt
 import time
 from selenium import webdriver
 from selenium import common
@@ -11,7 +11,6 @@ from basicftp import *          # basic functions for uploading/downloading from
 from webmanagement import *     # functions for navigating around the sites
 from initiateexchange import *  # helper functions for getting everything setup/shutdown
 ####################################################
-
 
 def debugPrint(string,override=False):
     ''' if global DEBUG or parameter is true then print '''
@@ -31,7 +30,7 @@ SITEENTERPROB = 1
 MINWAITTIME = 3
 
 # load page
-intialPage = 'http://www.beermoneytrafficexchange.net63.net'
+initialPage = 'http://www.beermoneytrafficexchange.net63.net'
 
 # public ftp site for retreiving site list.
 pub_server_ftp = 'yodelaeu.net76.net'
@@ -46,13 +45,12 @@ localFile = 'testlinks.txt'
 
     
 def main():        
-
     print 'Loading Config...'
     config = loadConfig()
     (driver,main_window_handle) = initiateWebdriver(config,initialPage=initialPage)
     
     numVisits = 0
-    
+     
     #   Create file to keep track if people are using program.
     debugPrint('initiating status file...')
     
@@ -63,20 +61,21 @@ def main():
     
     #   Load sites to be used.
     debugPrint('loading sites...')
-    sites = loadSites(user=config['user'],url=config['site'])
+    sites = loadSites(user=config['user'],url=config['site'],LOADLOCALLIST=LOADLOCALLIST,localFile=localFile)
     
     # window needs to be wide because 'skip' link needs to be 'visible.'
-    driver.set_window_size(max(900,config['size'][0]),max(300,config['size'][1]))
+    driver.set_window_size(max(1200,config['size'][0]),max(400,config['size'][1]))
       
     try:    
         for site in sites:
             driver.get(site.url)
             
             # wait at least 5 seconds for shortener skip link.
-            time.sleep(2*random.random() + 7)
+            time.sleep(2*random.random() + 8)
             # Consider shorteners first.
             if 'linkbucks' in site.url or 'adf.ly' in site.url or 'adfoc.us' in site.url:
                 debugPrint('Attempting a Shortened link.')
+                debugPrint(site.url)
                 enterShortenedURL(driver,site.url,config,main_window_handle)
                 
             # regardless of where we started, if we are at an ImgSpice site, enter.
@@ -92,8 +91,14 @@ def main():
                 time.sleep(random.random()+1)
             else:
                 time.sleep(max(random.randint(config['waittime'][0],config['waittime'][0]),MINWAITTIME))
+    except: 
+        print 'Here\' the error:'
+        traceback.print_exc()
+        print 'Done error'
+
     finally:
-        driver.quit()
+        debugPrint('went to ' + str(numVisits) + ' sites.')
+        driver.close()
         debugPrint('Done surfing.  Updating credit file...')
         with open(creditFileName,'a') as creditFile:
             creditFile.write(header + "," + str(numVisits)+ '\n') 
@@ -104,63 +109,3 @@ if __name__ == '__main__':
     main()
     
     
-    
-    
-'''
-    
-    
-def enterLinkBucks(driver,config,main_window_handle):
-    driver.set_window_size(max(900,config['size'][0]),max(200,config['size'][1]))
-    print 'Entering LinkBucks site.'
-    
-    # initial wait for skip link to appear.
-    time.sleep(2*random.random()+5)
-    try:
-        link = driver.find_element_by_id('skiplink')
-        print 'Clicking %s' % link.text
-        link.click()
-        #   Let popups open
-        time.sleep(.5)
-        closeAllWindowsExceptMainLinkBucks(driver,main_window_handle)
-    except common.exceptions.NoSuchElementException:
-        print 'Skip Link not found -- possible Captch required...'
-        print 'Moving on to next link.'
-
-def enterAdfly(driver,config,main_window_handle):
-    driver.set_window_size(max(900,config['size'][0]),max(200,config['size'][1]))
-    print 'Entering Adfly site.'
-    
-    # initial wait for skip link to appear.
-    time.sleep(2*random.random()+5)
-    try:
-        if random.random() < SITEENTERPROB:
-            link = driver.find_element_by_id('skip_button')
-            print 'Clicking %s' % link.text
-            link.click()
-            #   Let popups open
-            time.sleep(.5)
-            closeAllWindowsExceptMainLinkBucks(driver,main_window_handle)
-    except common.exceptions.NoSuchElementException:
-        print 'Skip Link not found -- possible Captch required...'
-        print 'Moving on to next link.'
-
-def enterAdfocus(driver,config,main_window_handle):
-
-    driver.set_window_size(max(900,config['size'][0]),max(200,config['size'][1]))
-    print 'Entering Adfocus site.'
-    
-    # initial wait for skip link to appear.
-    time.sleep(2*random.random()+5)
-    try:
-        # sometimes don't enter site -- not necessary yet.
-        if random.random() < SITEENTERPROB:
-            link = driver.find_element_by_class('skip')
-            print 'Clicking %s' % link.text
-            link.click()
-            #   Let popups open
-            time.sleep(.5)
-            closeAllWindowsExceptMainLinkBucks(driver,main_window_handle)
-    except common.exceptions.NoSuchElementException:
-        print 'Skip Link not found -- possible Captcha required...'
-        print 'Moving on to next link.'
-'''

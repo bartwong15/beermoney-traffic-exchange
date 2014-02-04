@@ -1,5 +1,6 @@
 import os
 import time
+import random
 from basicftp import *
 
 # switch to True to suppress some output
@@ -16,8 +17,8 @@ class site:
         self.url = url
         self.visit = 0
 
-def loadSites(user,url,filename = 'twitter-site-list.txt'):
-    ''' Load sites from file from FTP   '''
+def loadSites(user,url,filename = 'twitter-site-list.txt',LOADLOCALLIST=True,localFile='testlinks.txt'):
+    ''' Load sites from file from FTP or a local source   '''
     needToUpdate = True
     pullLinks(filename=filename,directory='/links/')
     

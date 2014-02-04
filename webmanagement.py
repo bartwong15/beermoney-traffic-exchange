@@ -12,13 +12,13 @@ def debugPrint(string,override=False):
         print string
 
 
-def initiateWebdriver(config,intialPage = 'http://www.beermoneytrafficexchange.net63.net'):
+def initiateWebdriver(config,initialPage = 'http://www.beermoneytrafficexchange.net63.net'):
     ''' initiates webdriver with settings specified in config file. '''
     print 'Starting webdriver...'
     driver = webdriver.Firefox()
     driver.set_window_position(0,0)
     driver.set_window_size(900,900)
-    driver.get(intialPage)
+    driver.get(initialPage)
     time.sleep(3)
     #   Make small
     driver.set_window_size(max(100,config['size'][0]),max(200,config['size'][1]))
@@ -87,18 +87,22 @@ def closeAllWindowsExceptMainScript(driver,main_window_handle):
         driver.switch_to_window(handle)
         if driver.current_window_handle != main_window_handle:
             try:
+                time.sleep(0.5)
                 print driver.current_window_handle
                 driver.close()
                 # linkbucks usually tries to put some javascript alert in
                 # this code should try to get around that.
                 try:
                     alert = driver.switch_to_alert()
+                    time.sleep(1)
                     alert.accept()
                 except common.exceptions.NoAlertPresentException:
                     print 'No Alert present...'
             except common.exceptions.NoSuchWindowException:
                 print 'Window already closed'
                 
-    # back to main window
-    driver.switch_to_window(main_window_handle)
-   
+    try:
+        # back to main window
+        driver.switch_to_window(main_window_handle)
+    except:
+        print 'whoops'
