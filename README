@@ -1,0 +1,41 @@
+##############################
+# Traffic exchange program   #
+# developed for /r/beermoney #
+# by /u/sinksanksunk	     #
+##############################
+
+requirements
+============
+- Windows (python runs on Windows/Mac with selenium)
+- Firefox
+
+usage
+=====
+python traffic-exchange-v0.2.py
+traffic-exchange-v0.2.exe
+
+config
+======
+you need to provide:
+  - username (please use reddit username. This is not necessary, but will make support easier.)
+  - website (see below for details)
+optional settings:
+  - size (this is disabled currently)
+  - position (will be enabled in future releases, but during testing the window is visible)
+
+ WEBSITE REQUIREMENTS (please read carefully)
+ ============================================
+ please submit (up to 10) ImgSpice links.  If you are using a link shortener ONLY USE LINKBUCKS.
+ This is stated in ImgSpice TOS.
+ Other supported link shorteners for other sites: Adf.ly, Adfoc.us.
+ Not thoroughly tested, but possibly: Ysear.ch
+
+How it works
+============
+The idea of this program is to take advantage of sites that pay per viewer.  For example,
+ImgSpice pays up to $3.50 per 1000 unique hits.  This software automatically surfs through
+a list of websites from each users' computer. The list of websites is a combination of each
+links that each user generates and uploads. Thus, each user will generate clicks for the 
+other users.  So for example, if we have 100 users, and each user submits 10 links.  Then
+if each person runs the software each day, every link will be clicked and viewed once, for
+a total of 1000 views per user, which could be up to $3.50 per day.
