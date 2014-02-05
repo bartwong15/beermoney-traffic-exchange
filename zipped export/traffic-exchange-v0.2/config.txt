@@ -1,0 +1,5 @@
+user = sinksanksunk
+site = http://www.google.com
+size = 150,250
+
+pos = 0,0
